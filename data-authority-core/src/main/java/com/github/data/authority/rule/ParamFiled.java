@@ -1,4 +1,6 @@
-package com.github.data.authority;
+package com.github.data.authority.rule;
+
+import java.util.Objects;
 
 /**
  * 参数字段
@@ -13,7 +15,7 @@ public class ParamFiled {
     /**
      * 参数长度大于0 标识集合
      */
-    private int len;
+    private Object value;
 
     public String getName() {
         return name;
@@ -23,18 +25,20 @@ public class ParamFiled {
         this.name = name;
     }
 
-    public int getLen() {
-        return len;
+    public Object getValue() {
+        return value;
     }
 
-    public void setLen(int len) {
-        this.len = len;
-    }
 
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
     @Override public String toString() {
         return "ParamFiled{" +
             "name='" + name + '\'' +
-            ", len=" + len +
+            ", value=" + value +
             '}';
     }
+
 }

@@ -1,4 +1,4 @@
-package com.github.data.authority;
+package com.github.data.authority.rule;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -34,4 +34,9 @@ public class DataPermission {
            return Lists.newArrayList();
     }
 
+    @Override public String toString() {
+        return "DataPermission{" +
+            "dataPermissionRule=" + dataPermissionRule +
+            '}';
+    }
 }

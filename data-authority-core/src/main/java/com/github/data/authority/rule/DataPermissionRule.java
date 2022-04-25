@@ -1,23 +1,28 @@
-package com.github.data.authority;
+package com.github.data.authority.rule;
 
 /**
  * 数据权限规则
+ *
  * @author chenzhh
  */
 public class DataPermissionRule {
     /**
+     * 表名
+     */
+    private String table;
+    /**
      * 规则字段
      */
-    private String  column;
+    private String column;
 
     /**
      * 规则字段
      */
-    private String  operator;
+    private String operator;
     /**
      * 规则值
      */
-    private String  attribute;
+    private String attribute;
 
     public String getColumn() {
         return column;
@@ -41,5 +46,22 @@ public class DataPermissionRule {
 
     public void setAttribute(String attribute) {
         this.attribute = attribute;
+    }
+
+    public String getTable() {
+        return table;
+    }
+
+    public void setTable(String table) {
+        this.table = table;
+    }
+
+    @Override public String toString() {
+        return "DataPermissionRule{" +
+            "table='" + table + '\'' +
+            ", column='" + column + '\'' +
+            ", operator='" + operator + '\'' +
+            ", attribute='" + attribute + '\'' +
+            '}';
     }
 }

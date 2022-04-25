@@ -1,6 +1,6 @@
 package com.github.data.authority.util;
 
-import com.github.data.authority.ParamFiled;
+import com.github.data.authority.rule.ParamFiled;
 import com.github.data.authority.annotation.ColumnAuthority;
 import com.google.common.collect.Lists;
 import java.lang.reflect.Field;
@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * 反射工具类
@@ -34,10 +33,11 @@ public final class ReflectionUtils {
     }
 
     /**
+     * 获取参数值
      * @param o
      * @return
      */
-    public static List<ParamFiled> getFiledsInfo(Object o) {
+    public static List<ParamFiled> getParamFiled(Object o) {
         List<ParamFiled> list = Lists.newArrayList();
         if (o instanceof Map) {
             Map<String, Object> paramMap = (Map<String, Object>) o;
@@ -45,8 +45,7 @@ public final class ReflectionUtils {
                 if (!param.startsWith("param")) {
                     ParamFiled filed = new ParamFiled();
                     filed.setName(param);
-                    Object obj = paramMap.get(param);
-                    paramFiled(obj,filed);
+                    filed.setValue(paramMap.get(param));
                     list.add(filed);
                 }
             }
@@ -57,8 +56,7 @@ public final class ReflectionUtils {
                 if (Objects.nonNull(value) && !"".equals(value) && !"null".equals(value)) {
                     ParamFiled filed = new ParamFiled();
                     filed.setName(fields[i].getName());
-                    Class<?> clazz = fields[i].getType();
-                    paramFiled(clazz,value,filed);
+                    filed.setValue(value);
                     list.add(filed);
                 }
 
@@ -83,37 +81,19 @@ public final class ReflectionUtils {
 
     }
 
-    /**
-     * 判断类型
-     * @param obj
-     * @param filed
-     */
-    private final static void paramFiled(Object obj, ParamFiled filed) {
-        if (obj instanceof List) {
-            List list = (List) obj;
-            filed.setLen(list.size());
-        } else if (obj instanceof Set) {
-            Set set = (Set) obj;
-            filed.setLen(set.size());
-        } else if (obj instanceof Map) {
-            Map map = (Map) obj;
-            filed.setLen(map.size());
-        } else {
-            filed.setLen(0);
-        }
-    }
-    private final static void paramFiled(Class<?> clazz, Object value, ParamFiled filed) {
-        if (clazz == List.class) {
-            List list = (List) value;
-            filed.setLen(list.size());
-        } else if (clazz == Set.class) {
-            Set set = (Set) value;
-            filed.setLen(set.size());
-        } else if (clazz == Map.class) {
-            Map map = (Map) value;
-            filed.setLen(map.size());
-        } else {
-            filed.setLen(0);
-        }
-    }
+
+//    private final static void paramFiled(Class<?> clazz, Object value, ParamFiled filed) {
+//        if (clazz == List.class) {
+//            List list = (List) value;
+//            filed.setLen(list.size());
+//        } else if (clazz == Set.class) {
+//            Set set = (Set) value;
+//            filed.setLen(set.size());
+//        } else if (clazz == Map.class) {
+//            Map map = (Map) value;
+//            filed.setLen(map.size());
+//        } else {
+//            filed.setLen(0);
+//        }
+//    }
 }
