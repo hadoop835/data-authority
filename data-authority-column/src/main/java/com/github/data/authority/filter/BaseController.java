@@ -1,7 +1,6 @@
-package com.github.data.authority;
+package com.github.data.authority.filter;
 
 import com.alibaba.fastjson2.JSON;
-import com.github.data.authority.filter.DataColumnPropertyPreFilter;
 import com.github.data.authority.util.ReflectionUtils;
 import java.lang.reflect.Type;
 import java.util.List;

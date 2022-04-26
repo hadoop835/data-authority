@@ -1,4 +1,4 @@
-package com.github.data.authority;
+package com.github.data.authority.filter;
 
 import java.util.List;
 

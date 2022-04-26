@@ -23,6 +23,7 @@ public final class DruidParseStatementsFactory {
             return null;
         }
         for (SQLStatement sqlStatement : sqlStatements) {
+
             SelectParserVisitor parserVisitor = new SelectParserVisitor(parserColumnInfos);
             sqlStatement.accept(parserVisitor);
             return sqlStatement.toString();

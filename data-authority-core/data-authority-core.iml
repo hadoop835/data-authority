@@ -55,7 +55,5 @@
     <orderEntry type="library" name="Maven: org.mybatis:mybatis:3.5.9" level="project" />
     <orderEntry type="library" name="Maven: org.mybatis:mybatis-spring:2.0.7" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:transmittable-thread-local:2.12.6" level="project" />
-    <orderEntry type="library" name="Maven: ognl:ognl:3.3.2" level="project" />
-    <orderEntry type="library" name="Maven: org.javassist:javassist:3.28.0-GA" level="project" />
   </component>
 </module>

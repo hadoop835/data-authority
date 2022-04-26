@@ -9,6 +9,7 @@
     <modules>
         <module>data-authority-core</module>
         <module>data-authority-maven</module>
+        <module>data-authority-column</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -20,6 +21,9 @@
         <mybatis.version>2.2.2</mybatis.version>
         <mybatis-dynamic.version>1.4.0</mybatis-dynamic.version>
         <transmittable.version>2.12.6</transmittable.version>
+        <aspectjweaver.versin>1.9.9.1</aspectjweaver.versin>
+        <fastjson2.version>2.0.1</fastjson2.version>
+        <guava.version>31.1-jre</guava.version>
     </properties>
     <dependencyManagement>
     <dependencies>
@@ -50,6 +54,21 @@
             <groupId>com.alibaba</groupId>
             <artifactId>transmittable-thread-local</artifactId>
             <version>${transmittable.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectjweaver.versin}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>${fastjson2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
     </dependencyManagement>

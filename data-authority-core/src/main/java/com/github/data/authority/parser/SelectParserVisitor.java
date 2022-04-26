@@ -6,20 +6,19 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.util.StringUtils;
-import com.alibaba.druid.util.Utils;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +38,62 @@ public class SelectParserVisitor extends MySqlASTVisitorAdapter {
 
     public SelectParserVisitor(Map<String, List<ParserColumnInfo>> parserColumnInfos) {
         this.parserColumnInfos = parserColumnInfos;
+    }
+
+    @Override
+    public boolean visit(MySqlSelectQueryBlock mySqlSelectQueryBlock) {
+        SQLTableSource tableSource = mySqlSelectQueryBlock.getFrom();
+        if (tableSource instanceof SQLJoinTableSource) {
+            SQLJoinTableSource sqlJoinTableSource = (SQLJoinTableSource) tableSource;
+            List<ParserTableInfo> tableInfos = getAllTableAlias(Lists.newArrayList(), sqlJoinTableSource);
+            SQLExpr expr = mySqlSelectQueryBlock.getWhere();
+            if (Objects.nonNull(expr)) {
+                if (Objects.nonNull(tableInfos) && tableInfos.size() > 0) {
+                    filterWhereColumnTable(tableInfos, expr);
+                    SQLExpr sqlExpr = parserWhere(tableInfos, expr);
+                    mySqlSelectQueryBlock.setWhere(sqlExpr);
+                }
+            } else {
+                SQLExpr sqlExpr = parserWhere(tableInfos);
+                mySqlSelectQueryBlock.setWhere(sqlExpr);
+            }
+        }else if (tableSource instanceof SQLSubqueryTableSource) {
+            return isSQLJoinTableSource(tableSource);
+        }else{
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isSQLJoinTableSource(SQLTableSource sqlTableSource) {
+        if (sqlTableSource instanceof SQLSubqueryTableSource) {
+            SQLSubqueryTableSource subqueryTableSource = (SQLSubqueryTableSource) sqlTableSource;
+            SQLSelectQuery sqlSelectQuery = subqueryTableSource.getSelect().getQuery();
+            if (sqlSelectQuery instanceof MySqlSelectQueryBlock) {
+                MySqlSelectQueryBlock block = (MySqlSelectQueryBlock) sqlSelectQuery;
+                SQLTableSource tableSource = block.getFrom();
+                if (tableSource instanceof SQLSubqueryTableSource) {
+                    isSQLJoinTableSource(tableSource);
+                }else if (tableSource instanceof SQLJoinTableSource) {
+                    SQLJoinTableSource sqlJoinTableSource = (SQLJoinTableSource) tableSource;
+                    List<ParserTableInfo> tableInfos = getAllTableAlias(Lists.newArrayList(), sqlJoinTableSource);
+                    SQLExpr expr = block.getWhere();
+                    if (Objects.nonNull(expr)) {
+                        if (Objects.nonNull(tableInfos) && tableInfos.size() > 0) {
+                            filterWhereColumnTable(tableInfos, expr);
+                            SQLExpr sqlExpr = parserWhere(tableInfos, expr);
+                            block.setWhere(sqlExpr);
+                        }
+                    } else {
+                        SQLExpr sqlExpr = parserWhere(tableInfos);
+                        block.setWhere(sqlExpr);
+                    }
+                }else{
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -98,7 +153,6 @@ public class SelectParserVisitor extends MySqlASTVisitorAdapter {
             SQLSubqueryTableSource subqueryTableSource = (SQLSubqueryTableSource) tableSource;
             SQLSelectQueryBlock sqlSelectQueryBlock = (SQLSelectQueryBlock) subqueryTableSource.getSelect().getQuery();
             getTableAlias(tableInfos, sqlSelectQueryBlock.getFrom(), isRight);
-            //tableInfos.add(new ParserTableInfo(subqueryTableSource.gett, tableSource.getAlias()));
         }
         //内连接
         if (tableSource instanceof SQLJoinTableSource) {
@@ -107,7 +161,6 @@ public class SelectParserVisitor extends MySqlASTVisitorAdapter {
             //join语句在where条件中是不需要加入右表的
             if (isRight) {
                 getTableAlias(tableInfos, joinSource.getRight(), true);
-                ;
             }
         }
         if (tableSource instanceof SQLExprTableSource) {
@@ -168,7 +221,7 @@ public class SelectParserVisitor extends MySqlASTVisitorAdapter {
      * @param expr
      * @return
      */
-    private SQLExpr parserWhere(List<ParserTableInfo> tableInfos, SQLBinaryOpExpr expr) {
+    private SQLExpr parserWhere(List<ParserTableInfo> tableInfos, SQLExpr expr) {
         SQLExpr allOpExpr = expr;
         if (Objects.nonNull(tableInfos) && tableInfos.size() > 0) {
             for (ParserTableInfo tableInfo : tableInfos) {
@@ -183,8 +236,8 @@ public class SelectParserVisitor extends MySqlASTVisitorAdapter {
                                 parserSQLExpr(tableInfo, sql, sqlBinaryOpExpr.getLeft(), sqlBinaryOpExpr.getOperator(), sqlBinaryOpExpr.getRight());
                                 allOpExpr = SQLBinaryOpExpr.and(allOpExpr, SQLUtils.toSQLExpr(sql.toString(), DbType.mysql));
                             }
-                            if(sqlExpr instanceof SQLInListExpr){
-                                sql.add(returnAlias(tableInfo.getAlias(),tableInfo.getTableName())).add(".").add(sqlExpr.toString());
+                            if (sqlExpr instanceof SQLInListExpr) {
+                                sql.add(returnAlias(tableInfo.getAlias(), tableInfo.getTableName())).add(".").add(sqlExpr.toString());
                                 allOpExpr = SQLBinaryOpExpr.and(allOpExpr, SQLUtils.toSQLExpr(sql.toString()));
                             }
                         } else {
@@ -216,6 +269,7 @@ public class SelectParserVisitor extends MySqlASTVisitorAdapter {
 
     /**
      * 解析自定sql
+     *
      * @param parserTableInfo
      * @param sql
      * @param left
@@ -252,5 +306,56 @@ public class SelectParserVisitor extends MySqlASTVisitorAdapter {
             sql.add(returnAlias(parserTableInfo.getAlias(), parserTableInfo.getTableName()));
             sql.add(".").add(right.toString());
         }
+    }
+
+    /**
+     * join 查询，将查询条件追加到左表后
+     *
+     * @param tableInfos
+     * @return
+     */
+    private SQLExpr parserWhere(List<ParserTableInfo> tableInfos) {
+        SQLExpr allOpExpr = null;
+        if (Objects.nonNull(tableInfos) && tableInfos.size() > 0) {
+            for (ParserTableInfo tableInfo : tableInfos) {
+                List<ParserColumnInfo> parserColumnInfoList = this.parserColumnInfos.get(tableInfo.getTableName());
+                if (Objects.nonNull(parserColumnInfoList) && parserColumnInfoList.size() > 0) {
+                    for (ParserColumnInfo parserColumnInfo : parserColumnInfoList) {
+                        if ("0".equals(parserColumnInfo.getOperator())) {
+                            SQLExpr sqlExpr = SQLUtils.toSQLExpr(parserColumnInfo.getColumn(), DbType.mysql);
+                            StringJoiner sql = new StringJoiner("");
+                            if (sqlExpr instanceof SQLBinaryOpExpr) {
+                                SQLBinaryOpExpr sqlBinaryOpExpr = (SQLBinaryOpExpr) sqlExpr;
+                                parserSQLExpr(tableInfo, sql, sqlBinaryOpExpr.getLeft(), sqlBinaryOpExpr.getOperator(), sqlBinaryOpExpr.getRight());
+                                if (Objects.nonNull(allOpExpr)) {
+                                    allOpExpr = SQLBinaryOpExpr.and(allOpExpr, SQLUtils.toSQLExpr(sql.toString(), DbType.mysql));
+                                } else {
+                                    allOpExpr = SQLUtils.toSQLExpr(sql.toString(), DbType.mysql);
+                                }
+
+                            }
+                            if (sqlExpr instanceof SQLInListExpr) {
+                                sql.add(returnAlias(tableInfo.getAlias(), tableInfo.getTableName())).add(".").add(sqlExpr.toString());
+                                if (Objects.nonNull(allOpExpr)) {
+                                    allOpExpr = SQLBinaryOpExpr.and(allOpExpr, SQLUtils.toSQLExpr(sql.toString()));
+                                } else {
+                                    allOpExpr = SQLUtils.toSQLExpr(sql.toString());
+                                }
+                            }
+                        } else {
+                            StringJoiner sql = new StringJoiner("");
+                            sql.add(returnAlias(tableInfo.getAlias(), tableInfo.getTableName()));
+                            sql.add(".").add(parserColumnInfo.getColumn());
+                            if (Objects.nonNull(allOpExpr)) {
+                                allOpExpr = SQLBinaryOpExpr.and(allOpExpr, SQLUtils.toSQLExpr(sql.toString(), DbType.mysql));
+                            } else {
+                                allOpExpr = SQLUtils.toSQLExpr(sql.toString(), DbType.mysql);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return allOpExpr;
     }
 }

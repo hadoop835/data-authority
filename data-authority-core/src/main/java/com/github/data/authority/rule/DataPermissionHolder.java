@@ -1,7 +1,6 @@
 package com.github.data.authority.rule;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
-import com.github.data.authority.rule.DataPermission;
 
 /**
  * 当前登录用户信息
