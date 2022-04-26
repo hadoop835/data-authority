@@ -7,9 +7,10 @@
     <artifactId>data-authority</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>data-authority-core</module>
         <module>data-authority-maven</module>
         <module>data-authority-column</module>
+        <module>data-authority-common</module>
+        <module>data-authority-row</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -27,6 +28,11 @@
     </properties>
     <dependencyManagement>
     <dependencies>
+        <dependency>
+            <artifactId>data-authority-common</artifactId>
+            <groupId>com.github.data.authority</groupId>
+            <version>${project.version}</version>
+        </dependency>
     <dependency>
         <!-- Import dependency management from Spring Boot -->
         <groupId>org.springframework.boot</groupId>
@@ -72,4 +78,26 @@
         </dependency>
     </dependencies>
     </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+    </dependencies>
 </project>

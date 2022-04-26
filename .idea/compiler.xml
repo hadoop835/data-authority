@@ -7,15 +7,18 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="data-authority-maven" />
-        <module name="data-authority-core" />
+        <module name="data-authority-common" />
+        <module name="data-authority-row" />
         <module name="data-authority-column" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="data-authority" target="8" />
       <module name="data-authority-column" target="8" />
+      <module name="data-authority-common" target="8" />
       <module name="data-authority-core" target="8" />
       <module name="data-authority-maven" target="8" />
+      <module name="data-authority-row" target="8" />
       <module name="github-data-authority" target="8" />
     </bytecodeTargetLevel>
   </component>

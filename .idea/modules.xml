@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/data-authority.iml" filepath="$PROJECT_DIR$/data-authority.iml" />
+      <module fileurl="file://$PROJECT_DIR$/data-authority-column/data-authority-column.iml" filepath="$PROJECT_DIR$/data-authority-column/data-authority-column.iml" />
+      <module fileurl="file://$PROJECT_DIR$/data-authority-common/data-authority-common.iml" filepath="$PROJECT_DIR$/data-authority-common/data-authority-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/data-authority-maven/data-authority-maven.iml" filepath="$PROJECT_DIR$/data-authority-maven/data-authority-maven.iml" />
+      <module fileurl="file://$PROJECT_DIR$/data-authority-row/data-authority-row.iml" filepath="$PROJECT_DIR$/data-authority-row/data-authority-row.iml" />
+      <module fileurl="file://$PROJECT_DIR$/github-data-authority.iml" filepath="$PROJECT_DIR$/github-data-authority.iml" />
+    </modules>
+  </component>
+</project>
