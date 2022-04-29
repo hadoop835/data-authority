@@ -20,4 +20,15 @@ public @interface DatalimitColumn {
      */
     Class<?> clazz ();
 
+    /**
+     * 方法说明
+     * @return
+     */
+    String  name();
+    /**
+     * 方法名称
+     * @return
+     */
+    String  method() default "";
+
 }

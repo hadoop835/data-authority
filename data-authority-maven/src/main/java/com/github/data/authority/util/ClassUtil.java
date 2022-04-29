@@ -36,12 +36,12 @@ public final class ClassUtil {
      */
     private static List<Class<?>> getClassAll(Set<String> classpathElements,
         ClassLoader classLoader,String packages, Log log) {
+        List<Class<?>> clazzs = Lists.newArrayList();
         List<Class<?>> classes = classpathElements.stream().filter(classpath -> {
             return new File(classpath).isDirectory();
         }).flatMap((classpath) -> {
-            return getClass(new File(classpath), classLoader, log).stream();
+            return getClass(clazzs,new File(classpath), classLoader, log).stream();
         }).collect(Collectors.toList());
-        log.info(classes.toString());
         Set<Class<?>> classSet = ScanJarClassUtil.getScanJarClass(classpathElements, classLoader,packages, log);
         if (!CollectionUtils.isEmpty(classSet)) {
             classes.addAll(classSet);
@@ -55,22 +55,20 @@ public final class ClassUtil {
      * @param log
      * @return
      */
-    private static List<Class<?>> getClass(File file, ClassLoader classLoader, Log log) {
-        List<Class<?>> clazzs = Lists.newArrayList();
+    private static List<Class<?>> getClass(List<Class<?>> clazzs,File file, ClassLoader classLoader, Log log) {
         //递归
         if (Objects.nonNull(file) && file.exists() && file.isDirectory()) {
             File[] files = file.listFiles();
             if (Objects.nonNull(files) && files.length > 0) {
                 for (File f : files) {
                     if (f.isDirectory()) {
-                        getClass(f, classLoader, log);
+                        getClass(clazzs,f, classLoader, log);
                     } else if (f.isFile() && f.getName().endsWith(".class")) {
                         String absolutePath = f.getAbsolutePath();
                         absolutePath = absolutePath.substring(absolutePath.indexOf("classes") + 8, absolutePath.length() - ".class".length());
                         absolutePath = absolutePath.replaceAll("[/|\\\\]", ".");
-                        log.info(absolutePath);
                         try {
-                            clazzs.add(ClassUtils.forName(absolutePath, classLoader));
+                            clazzs.add(classLoader.loadClass(absolutePath));
                         } catch (ClassNotFoundException e) {
                             log.info("加载类异常" + f.getAbsolutePath(), e);
                             throw new RuntimeException("加载类异常", e);

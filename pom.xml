@@ -29,6 +29,16 @@
     <dependencyManagement>
     <dependencies>
         <dependency>
+            <groupId>com.github.data.authority</groupId>
+            <artifactId>data-authority-row</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.data.authority</groupId>
+            <artifactId>data-authority-column</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <artifactId>data-authority-common</artifactId>
             <groupId>com.github.data.authority</groupId>
             <version>${project.version}</version>

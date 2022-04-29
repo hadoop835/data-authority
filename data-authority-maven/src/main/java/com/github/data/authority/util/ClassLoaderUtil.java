@@ -30,7 +30,6 @@ public class ClassLoaderUtil {
             e.printStackTrace();
         }
         URLClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[] {}), ClassUtils.getDefaultClassLoader());
-        log.info(classLoader.toString());
         Objects.requireNonNull(classLoader, "获取类加载器失败");
         return classLoader;
     }

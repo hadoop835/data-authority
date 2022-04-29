@@ -60,6 +60,10 @@ public class DatalimitColResourceAspect extends AbstractDatalimitColAspectSuppor
         try {
             Object result = pjp.proceed();
             String method = MethodUtil.resolveMethodName(originMethod);
+            String value = annotation.method();
+            if(Objects.nonNull(value) && !"".equals(value.trim())){
+                method = method+"."+value;
+            }
             List<String> columns = this.datalimitColumn.getDatalimitColumnByMethod(method);
             Class<?> ret = result.getClass();
             if (Objects.nonNull(ret) && !SimpleTypeRegistryUtil.isSimpleType(ret)) {
