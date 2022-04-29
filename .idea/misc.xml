@@ -9,6 +9,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/data-authority-core/pom.xml" />
+        <option value="$PROJECT_DIR$/data-authority-maven1/pom.xml" />
       </set>
     </option>
   </component>

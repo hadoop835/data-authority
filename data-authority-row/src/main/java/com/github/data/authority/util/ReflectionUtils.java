@@ -1,14 +1,12 @@
 package com.github.data.authority.util;
 
 import com.github.data.authority.rule.ParamFiled;
-import com.github.data.authority.annotation.ColumnAuthority;
 import com.google.common.collect.Lists;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * 反射工具类
@@ -21,19 +19,8 @@ public final class ReflectionUtils {
     }
 
     /**
-     * @param clazz
-     * @return
-     */
-    public static Optional<String> getColumnAuthorityCode(Class<?> clazz) {
-        ColumnAuthority columnAuthority = clazz.getAnnotation(ColumnAuthority.class);
-        if (Objects.nonNull(columnAuthority)) {
-            return Optional.ofNullable(columnAuthority.code());
-        }
-        return Optional.empty();
-    }
-
-    /**
      * 获取参数值
+     *
      * @param o
      * @return
      */
@@ -80,7 +67,6 @@ public final class ReflectionUtils {
         }
 
     }
-
 
 //    private final static void paramFiled(Class<?> clazz, Object value, ParamFiled filed) {
 //        if (clazz == List.class) {

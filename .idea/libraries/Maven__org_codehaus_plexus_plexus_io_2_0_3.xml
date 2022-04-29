@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.codehaus.plexus:plexus-io:2.0.3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../apache-maven-3.8.2/local-repository/org/codehaus/plexus/plexus-io/2.0.3/plexus-io-2.0.3.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../apache-maven-3.8.2/local-repository/org/codehaus/plexus/plexus-io/2.0.3/plexus-io-2.0.3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../apache-maven-3.8.2/local-repository/org/codehaus/plexus/plexus-io/2.0.3/plexus-io-2.0.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -7,6 +7,7 @@ import com.github.data.authority.rule.DataPermission;
 import com.github.data.authority.rule.DataPermissionHolder;
 import com.github.data.authority.rule.DataPermissionRule;
 import com.github.data.authority.rule.ParamFiled;
+import com.github.data.authority.sql.MysqlSanitiser;
 import com.github.data.authority.util.PluginUtils;
 import com.github.data.authority.util.ReflectionUtils;
 import com.google.common.base.Function;
@@ -166,7 +167,9 @@ public class DataPermissionInterceptor implements Interceptor {
                 context.setVariable(filed.getName(), filed.getValue());
             }
             Expression expression = parser.parseExpression(column, new TemplateParserContext());
-            return expression.getValue(context, String.class);
+            //防止sql注入
+            MysqlSanitiser mysqlSanitiser = MysqlSanitiser.getInstance();
+            return  mysqlSanitiser.mysqlSanitise(expression.getValue(context, String.class));
         } catch (ExpressionException expressionException) {
             LOGGER.error("缺失参数，解析自定义sql条件异常【" + column + "】,{}", expressionException);
             throw new DruidRuntimeException("自定义sql，解析异常", expressionException);
