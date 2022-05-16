@@ -44,9 +44,9 @@ public final class ClassUtil {
         }).collect(Collectors.toList());
         Set<Class<?>> classSet = ScanJarClassUtil.getScanJarClass(classpathElements, classLoader,packages, log);
         if (!CollectionUtils.isEmpty(classSet)) {
-            classes.addAll(classSet);
+            clazzs.addAll(classSet);
         }
-        return classes;
+        return clazzs;
     }
 
     /**
