@@ -18,4 +18,10 @@ public class DatalimitColumnAutoConfiguration {
         return new DatalimitColResourceAspect(datalimitColumn);
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public IDatalimitColumn dataAuthorityDefaultDatalimitColumn() {
+        return new IDatalimitColumn() {
+        };
+    }
 }

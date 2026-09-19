@@ -38,6 +38,8 @@ public interface IDatalimitColumn {
      * @param method        方法
      * @return
      */
-    List<String> getDatalimitColumnByUserId(String tenantId, String applicationId, String userId, String method);
+    default List<String> getDatalimitColumnByUserId(String tenantId, String applicationId, String userId, String method) {
+        return new java.util.ArrayList<>();
+    }
 
 }
